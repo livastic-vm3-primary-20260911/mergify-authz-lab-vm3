@@ -1,0 +1,1 @@
+fresh valid configuration validation trigger
