@@ -1,0 +1,9 @@
+pull_request_rules:
+  - name: vm3 bot-account current-permission control
+    conditions:
+      - number = 2
+    actions:
+      merge:
+        method: merge
+        merge_bot_account: livastic-vm3-secondary-20260911
+
