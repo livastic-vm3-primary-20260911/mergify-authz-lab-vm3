@@ -1,1 +1,1 @@
-pull_request_rules: []
+extends: mergify-private-dep-vm3
