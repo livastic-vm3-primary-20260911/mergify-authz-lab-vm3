@@ -1,7 +1,1 @@
-pull_request_rules:
-  - name: VM3-CONFIG-VALID-POSITIVE
-    conditions:
-      - label = vm3-config-never
-    actions:
-      comment:
-        message: "VM3_CONFIG_VALID_POSITIVE"
+extends: mergify-private-dep-vm3
