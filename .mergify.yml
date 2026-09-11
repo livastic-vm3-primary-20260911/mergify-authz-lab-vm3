@@ -1,6 +1,1 @@
-pull_request_rules:
-  - name: vm3 reverse provenance action discriminator
-    conditions:
-      - number = 1
-    actions:
-      update:
+pull_request_rules: []
