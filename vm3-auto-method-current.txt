@@ -1,2 +1,0 @@
-vm3 current auto-method commit A
-vm3 current auto-method commit B
