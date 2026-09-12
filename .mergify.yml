@@ -1,0 +1,6 @@
+pull_request_rules:
+  - name: auto-method-policy-proof
+    conditions:
+      - label = vm3-auto-method-trigger
+    actions:
+      merge: {}
