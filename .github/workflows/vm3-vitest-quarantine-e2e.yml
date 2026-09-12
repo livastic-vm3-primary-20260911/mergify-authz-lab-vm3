@@ -1,0 +1,71 @@
+name: vm3-vitest-quarantine-e2e
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  vitest-quarantine-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Prepare released Mergify Vitest fixture
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .vm3-vitest-e2e
+          cd .vm3-vitest-e2e
+          printf '%s\n' '{"name":"vm3-vitest-e2e","private":true,"type":"module"}' > package.json
+          npm install --silent --no-audit --no-fund @mergifyio/vitest@0.3.7 vitest@4.1.10
+          cat > vitest.config.mjs <<'EOF'
+          import { defineConfig } from 'vitest/config';
+          import { MergifyReporter } from '@mergifyio/vitest';
+          export default defineConfig({
+            test: {
+              watch: false,
+              reporters: [new MergifyReporter()],
+            },
+          });
+          EOF
+          cat > a.test.ts <<'EOF'
+          import { describe, it, expect } from 'vitest';
+          describe('auth', () => {
+            it('denies escalation', () => {
+              expect(true).toBe(true);
+            });
+          });
+          EOF
+          if [[ -f ../vm3-vitest-collision-fail ]]; then
+            cat > b.test.ts <<'EOF'
+          import { describe, it, expect } from 'vitest';
+          describe('auth', () => {
+            it('denies escalation', () => {
+              expect(true).toBe(false);
+            });
+          });
+          EOF
+          else
+            cat > b.test.ts <<'EOF'
+          import { describe, it, expect } from 'vitest';
+          describe('auth', () => {
+            it('denies escalation', () => {
+              expect(true).toBe(true);
+            });
+          });
+          EOF
+          fi
+      - name: Run required-style Vitest gate
+        working-directory: .vm3-vitest-e2e
+        env:
+          MERGIFY_TOKEN: ${{ secrets.VM3_MERGIFY_CI_TOKEN_E2E }}
+        run: |
+          set -euo pipefail
+          test -n "$MERGIFY_TOKEN"
+          npx vitest run --config vitest.config.mjs
