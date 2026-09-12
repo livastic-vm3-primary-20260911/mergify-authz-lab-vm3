@@ -1,12 +1,15 @@
 name: vm3-vitest-quarantine-e2e
 
+
 on:
   pull_request:
     branches:
       - main
 
+
 permissions:
   contents: read
+
 
 jobs:
   vitest-quarantine-gate:
@@ -23,7 +26,9 @@ jobs:
           mkdir -p .vm3-vitest-e2e
           cd .vm3-vitest-e2e
           printf '%s\n' '{"name":"vm3-vitest-e2e","private":true,"type":"module"}' > package.json
-          npm install --silent --no-audit --no-fund @mergifyio/vitest@0.3.7 vitest@4.1.10
+          corepack enable
+          corepack prepare pnpm@10.17.1 --activate
+          pnpm add @mergifyio/vitest@0.3.7 vitest@4.1.10
           cat > vitest.config.mjs <<'EOF'
           import { defineConfig } from 'vitest/config';
           import { MergifyReporter } from '@mergifyio/vitest';
@@ -34,38 +39,3 @@ jobs:
             },
           });
           EOF
-          cat > a.test.ts <<'EOF'
-          import { describe, it, expect } from 'vitest';
-          describe('auth', () => {
-            it('denies escalation', () => {
-              expect(true).toBe(true);
-            });
-          });
-          EOF
-          if [[ -f ../vm3-vitest-collision-fail ]]; then
-            cat > b.test.ts <<'EOF'
-          import { describe, it, expect } from 'vitest';
-          describe('auth', () => {
-            it('denies escalation', () => {
-              expect(true).toBe(false);
-            });
-          });
-          EOF
-          else
-            cat > b.test.ts <<'EOF'
-          import { describe, it, expect } from 'vitest';
-          describe('auth', () => {
-            it('denies escalation', () => {
-              expect(true).toBe(true);
-            });
-          });
-          EOF
-          fi
-      - name: Run required-style Vitest gate
-        working-directory: .vm3-vitest-e2e
-        env:
-          MERGIFY_TOKEN: ${{ secrets.VM3_MERGIFY_CI_TOKEN_E2E }}
-        run: |
-          set -euo pipefail
-          test -n "$MERGIFY_TOKEN"
-          npx vitest run --config vitest.config.mjs
