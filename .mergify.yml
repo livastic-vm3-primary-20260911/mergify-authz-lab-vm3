@@ -7,3 +7,10 @@ pull_request_rules:
         workflow:
           dispatch:
             - workflow: vm3-dispatch-provenance.yml
+
+  - name: ref-pattern-policy-proof
+    conditions:
+      - label = vm3-ref-pattern-trigger
+    actions:
+      merge:
+        method: squash
