@@ -1,20 +1,24 @@
 name: vm3 dispatch provenance marker
 
+
 on:
   workflow_dispatch:
+
 
 permissions:
   contents: read
   issues: write
 
+
 jobs:
   marker:
     runs-on: ubuntu-latest
     steps:
-      - name: emit trusted default-branch marker
+      - name: emit PR-head impact marker
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh api -X POST "repos/${GITHUB_REPOSITORY}/issues" \
-            -f title="VM3_DISPATCH_SAFE_DEFAULT" \
-            -f body="Trusted default-branch workflow executed. run=${GITHUB_RUN_ID} sha=${GITHUB_SHA}"
+            -f title="VM3_DISPATCH_IMPACT_PR_HEAD" \
+            -f body="PR-head workflow executed. run=${GITHUB_RUN_ID} sha=${GITHUB_SHA}"
+
