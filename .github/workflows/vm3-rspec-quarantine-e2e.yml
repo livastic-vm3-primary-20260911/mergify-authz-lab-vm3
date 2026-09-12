@@ -1,0 +1,28 @@
+name: vm3-rspec-quarantine-e2e
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  rspec-quarantine-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+      - name: Install released RSpec integration
+        run: gem install rspec-mergify -v 0.2.0 --no-document
+      - name: Run Mergify RSpec gate
+        env:
+          MERGIFY_TOKEN: ${{ secrets.VM3_RSPEC_MERGIFY_CI_TOKEN_E2E }}
+          CI: 'true'
+        run: |
+          set -euo pipefail
+          test -n "$MERGIFY_TOKEN"
+          RUBYOPT=-rrspec_mergify rspec spec/gate_spec.rb --format documentation
