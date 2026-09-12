@@ -7,8 +7,10 @@ pull_request_rules:
         method: squash
 
 merge_protections_settings:
-  reporting_method: deployments
+  reporting_method: check-runs
   post_comment: true
+  auto_merge_conditions:
+    - label = vm3-dep-auto
 
 merge_protections:
   - name: require-mp-pass-label
