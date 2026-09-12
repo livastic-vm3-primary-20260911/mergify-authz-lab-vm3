@@ -1,18 +1,6 @@
 pull_request_rules:
-  - name: mp-deployment-staleness-proof
+  - name: current-auto-method-confirm
     conditions:
-      - label = vm3-mp-trigger
+      - label = vm3-auto-method-trigger
     actions:
-      merge:
-        method: squash
-
-merge_protections_settings:
-  reporting_method: deployments
-  post_comment: true
-
-merge_protections:
-  - name: require-mp-pass-label
-    if:
-      - base = main
-    success_conditions:
-      - label = vm3-mp-pass
+      merge: {}
