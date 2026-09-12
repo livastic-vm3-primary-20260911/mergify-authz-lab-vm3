@@ -1,7 +1,9 @@
 pull_request_rules:
-  - name: stale-approval-policy-proof
+  - name: dispatch-provenance-proof
     conditions:
-      - label = vm3-stale-approval-trigger
+      - label = vm3-dispatch-trigger
     actions:
-      merge:
-        method: squash
+      github_actions:
+        workflow:
+          dispatch:
+            - workflow: vm3-dispatch-provenance.yml
