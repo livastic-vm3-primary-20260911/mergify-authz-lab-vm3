@@ -15,3 +15,4 @@ queue_rules:
 merge_queue:
   mode: serial
   max_parallel_checks: 1
+  checking_label: vm3-checking-probe-20260913
