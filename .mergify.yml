@@ -1,17 +1,18 @@
-commands_restrictions:
-  queue:
+pull_request_rules:
+  - name: mp-deployment-staleness-proof
     conditions:
-      - sender = livastic-vm3-primary-20260911
+      - label = vm3-mp-trigger
+    actions:
+      merge:
+        method: squash
 
-queue_rules:
-  - name: vm3-ff-review-freshness
-    queue_conditions: []
-    merge_conditions:
-      - "#approved-reviews-by >= 1"
-      - check-success = vm3-ff-review-hold
-    merge_method: fast-forward
-    batch_size: 1
+merge_protections_settings:
+  reporting_method: deployments
+  post_comment: true
 
-merge_queue:
-  mode: serial
-  max_parallel_checks: 1
+merge_protections:
+  - name: require-mp-pass-label
+    if:
+      - base = main
+    success_conditions:
+      - label = vm3-mp-pass
