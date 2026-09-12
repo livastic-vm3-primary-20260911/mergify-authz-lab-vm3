@@ -1,16 +1,18 @@
 pull_request_rules:
-  - name: dispatch-provenance-proof
+  - name: mp-deployment-staleness-proof
     conditions:
-      - label = vm3-dispatch-trigger
-    actions:
-      github_actions:
-        workflow:
-          dispatch:
-            - workflow: vm3-dispatch-provenance.yml
-
-  - name: ref-pattern-policy-proof
-    conditions:
-      - label = vm3-ref-pattern-trigger
+      - label = vm3-mp-trigger
     actions:
       merge:
         method: squash
+
+merge_protections_settings:
+  reporting_method: deployments
+  post_comment: true
+
+merge_protections:
+  - name: require-mp-pass-label
+    if:
+      - base = main
+    success_conditions:
+      - label = vm3-mp-pass
