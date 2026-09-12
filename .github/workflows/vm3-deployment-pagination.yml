@@ -1,0 +1,115 @@
+name: vm3 deployment pagination fixture
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        required: true
+        type: string
+      mode:
+        required: true
+        type: choice
+        options:
+          - baseline_success
+          - failure_flood
+          - cleanup
+
+permissions:
+  contents: read
+  deployments: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TARGET_REF: ${{ inputs.ref }}
+      MODE: ${{ inputs.mode }}
+    steps:
+      - name: Manage deployment pagination fixture
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json, os, urllib.error, urllib.parse, urllib.request
+          repo = 'livastic-vm3-primary-20260911/mergify-authz-lab-vm3'
+          token = os.environ['GH_TOKEN']
+          ref = os.environ['TARGET_REF']
+          mode = os.environ['MODE']
+          prefix = 'vm3-deploy-pg-'
+          prod = prefix + 'prod'
+
+          def api(method, path, body=None):
+              url = 'https://api.github.com/repos/' + repo + path
+              data = None if body is None else json.dumps(body).encode()
+              req = urllib.request.Request(url, data=data, method=method, headers={
+                  'Authorization': 'Bearer ' + token,
+                  'Accept': 'application/vnd.github+json',
+                  'X-GitHub-Api-Version': '2026-03-10',
+                  'Content-Type': 'application/json',
+              })
+              try:
+                  with urllib.request.urlopen(req, timeout=20) as r:
+                      raw = r.read().decode()
+                      return r.status, (json.loads(raw) if raw else None)
+              except urllib.error.HTTPError as e:
+                  return e.code, None
+
+          def create(env, state=None):
+              st, dep = api('POST', '/deployments', {
+                  'ref': ref,
+                  'environment': env,
+                  'auto_merge': False,
+                  'required_contexts': [],
+                  'transient_environment': True,
+                  'production_environment': False,
+              })
+              if st != 201 or not dep:
+                  return st, None, None
+              sid = None
+              if state:
+                  sid, _ = api('POST', f"/deployments/{dep['id']}/statuses", {'state': state, 'environment': env})
+              return st, dep['id'], sid
+
+          if mode == 'baseline_success':
+              st, did, ss = create(prod, 'success')
+              print(f'CREATE_STATUS={st}')
+              print(f'STATUS_STATUS={ss}')
+              print(f'DEPLOYMENT_ID={did}')
+          elif mode == 'failure_flood':
+              st, did, fs = create(prod, 'failure')
+              print(f'FAIL_CREATE_STATUS={st}')
+              print(f'FAIL_STATUS_STATUS={fs}')
+              print(f'FAIL_DEPLOYMENT_ID={did}')
+              created = 0
+              other = []
+              for i in range(1, 106):
+                  st, _, _ = create(f'{prefix}noise-{i:03d}')
+                  if st == 201: created += 1
+                  else: other.append(st)
+              print(f'NOISE_CREATED={created}')
+              print(f'NOISE_OTHER={other[:10]}')
+          elif mode == 'cleanup':
+              found = []
+              for page in range(1, 5):
+                  st, items = api('GET', f'/deployments?per_page=100&page={page}')
+                  if st != 200 or not isinstance(items, list):
+                      print(f'LIST_ERROR={st}')
+                      break
+                  found.extend([d for d in items if str(d.get('environment','')).startswith(prefix)])
+                  if len(items) < 100: break
+              inactive_ok = 0
+              deleted = 0
+              errors = []
+              for d in found:
+                  st1, _ = api('POST', f"/deployments/{d['id']}/statuses", {'state':'inactive','environment':d.get('environment')})
+                  st2, _ = api('DELETE', f"/deployments/{d['id']}")
+                  if st1 == 201: inactive_ok += 1
+                  if st2 == 204: deleted += 1
+                  else: errors.append((st1,st2))
+              print(f'FOUND={len(found)}')
+              print(f'INACTIVE_OK={inactive_ok}')
+              print(f'DELETED={deleted}')
+              print(f'CLEANUP_ERRORS={errors[:10]}')
+          else:
+              raise SystemExit('invalid mode')
+          PY
