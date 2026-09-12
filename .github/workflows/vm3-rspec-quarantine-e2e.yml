@@ -17,7 +17,9 @@ jobs:
         with:
           ruby-version: '3.3'
       - name: Install released RSpec integration
-        run: gem install rspec-mergify -v 0.2.0 --no-document
+        run: |
+          gem install rspec -v 3.13.2 --no-document
+          gem install rspec-mergify -v 0.2.0 --no-document
       - name: Run Mergify RSpec gate
         env:
           MERGIFY_TOKEN: ${{ secrets.VM3_RSPEC_MERGIFY_CI_TOKEN_E2E }}
@@ -25,4 +27,4 @@ jobs:
         run: |
           set -euo pipefail
           test -n "$MERGIFY_TOKEN"
-          RUBYOPT=-rrspec_mergify rspec spec/gate_spec.rb --format documentation
+          rspec --require rspec_mergify spec/gate_spec.rb --format documentation
