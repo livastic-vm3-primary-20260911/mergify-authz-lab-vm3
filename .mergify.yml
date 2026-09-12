@@ -1,6 +1,7 @@
 pull_request_rules:
-  - name: auto-method-policy-proof
+  - name: unsigned-signature-policy-proof
     conditions:
-      - label = vm3-auto-method-trigger
+      - label = vm3-signature-trigger
     actions:
-      merge: {}
+      merge:
+        method: merge
