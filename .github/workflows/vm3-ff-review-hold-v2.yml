@@ -1,0 +1,16 @@
+name: vm3 ff review hold v2
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  hold:
+    name: vm3-ff-review-hold-v2
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hold review freshness window
+        run: sleep 180
