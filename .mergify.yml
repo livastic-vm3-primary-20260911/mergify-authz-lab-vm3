@@ -4,10 +4,10 @@ commands_restrictions:
       - sender = livastic-vm3-primary-20260911
 
 queue_rules:
-  - name: vm3-milestone-rename-freshness
-    queue_conditions:
-      - milestone = vm3-milestone-rename-old
+  - name: vm3-ff-review-freshness-v2
+    queue_conditions: []
     merge_conditions:
+      - "#approved-reviews-by >= 1"
       - check-success = vm3-ff-review-hold-v2
     merge_method: fast-forward
     batch_size: 1
