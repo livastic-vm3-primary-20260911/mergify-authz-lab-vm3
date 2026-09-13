@@ -24,3 +24,13 @@ pull_request_rules:
     actions:
       merge:
         method: merge
+
+  - name: vm3-dismiss-review-preserve-change-request
+    conditions:
+      - head = vm3-dismiss-review-preserve
+      - author = livastic-vm3-primary-20260911
+    actions:
+      dismiss_reviews:
+        approved: true
+        changes_requested: false
+        when: synchronize
