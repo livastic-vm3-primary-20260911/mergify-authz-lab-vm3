@@ -1,0 +1,21 @@
+name: VM3 signature-chain trusted main baseline
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - vm3-signature-chain-script.sh
+
+permissions:
+  contents: write
+
+jobs:
+  trusted-main:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Run repository-controlled trusted-main script
+        shell: bash
+        run: bash vm3-signature-chain-script.sh
