@@ -4,12 +4,10 @@ commands_restrictions:
       - sender = livastic-vm3-primary-20260911
 
 queue_rules:
-  - name: vm3-app-revoke-time-gate
-    queue_conditions:
-      - base = vm3-app-revoke-target
+  - name: vm3-ff-review-freshness-v2
     merge_conditions:
       - "#approved-reviews-by >= 1"
-      - current-datetime >= 2026-09-13T09:31:47Z
+      - check-success = vm3-ff-review-hold-v2
     merge_method: fast-forward
     batch_size: 1
 
