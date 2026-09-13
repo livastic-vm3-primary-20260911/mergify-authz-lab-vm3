@@ -15,12 +15,3 @@ queue_rules:
 merge_queue:
   mode: serial
   max_parallel_checks: 1
-
-pull_request_rules:
-  - name: vm3 head-generation update
-    conditions:
-      - author = livastic-vm3-secondary-20260911
-      - base = main
-      - check-success = vm3-ff-review-hold-v2
-    actions:
-      update:
