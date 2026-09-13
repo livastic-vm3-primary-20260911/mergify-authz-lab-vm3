@@ -8,6 +8,7 @@ queue_rules:
     merge_conditions:
       - "#approved-reviews-by >= 1"
       - check-success = vm3-ff-review-hold-v2
+      - current-datetime >= 2026-09-13T09:20:55Z
     merge_method: fast-forward
     batch_size: 1
 
