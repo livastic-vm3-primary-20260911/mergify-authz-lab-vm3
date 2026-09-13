@@ -1,4 +1,4 @@
-name: VM3 Native Merge Group Proof
+# VM3 temporary native merge-group proof disabled after cleanup on 2026-09-13.\nname: VM3 Native Merge Group Proof
 
 on:
   pull_request:
