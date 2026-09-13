@@ -1,1 +1,2 @@
 VM3 dismiss-review preserve canary v1
+VM3 dismiss-review preserve canary v2 sync
