@@ -20,6 +20,9 @@ jobs:
           echo "REF_NAME=$GITHUB_REF_NAME"
           echo "BASE_REF=${GITHUB_BASE_REF:-<unset>}"
           echo "HEAD_REF=${GITHUB_HEAD_REF:-<unset>}"
+          echo "NODE=$(node -v) NPM=$(npm -v)"
+          npm install -g npm@10
+          echo "NPM_PINNED=$(npm -v)"
           WORK="$RUNNER_TEMP/vm3-workflow-run"
           rm -rf "$WORK"
           mkdir -p "$WORK"
@@ -27,7 +30,7 @@ jobs:
           cat > package.json <<'EOF'
           {"private":true,"type":"module"}
           EOF
-          npm install --no-audit --no-fund vitest@4.1.10 @mergifyio/vitest@0.3.7
+          npm install --legacy-peer-deps --no-audit --no-fund vitest@4.1.10 @mergifyio/vitest@0.3.7
           cat > vitest.config.mjs <<'EOF'
           import { defineConfig } from 'vitest/config';
           import { MergifyReporter } from '@mergifyio/vitest';
