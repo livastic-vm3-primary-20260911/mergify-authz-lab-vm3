@@ -8,7 +8,7 @@ queue_rules:
     queue_conditions:
       - base = vm3-two-step-target
     merge_conditions:
-      - check-success = vm3-premerge-required
+      - check-success ~= ^vm3-premerge-required$
     merge_method: merge
     batch_size: 1
 
