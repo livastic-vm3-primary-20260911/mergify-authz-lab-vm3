@@ -6,7 +6,7 @@ commands_restrictions:
 queue_rules:
   - name: vm3-label-generation-freshness
     queue_conditions:
-      - label = vm3-label-generation-old
+      - label = vm3-label-protected-old
     merge_conditions:
       - check-success = vm3-ff-review-hold-v2
     merge_method: fast-forward
