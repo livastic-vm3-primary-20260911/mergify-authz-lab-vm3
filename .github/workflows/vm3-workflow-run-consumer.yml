@@ -9,7 +9,6 @@ jobs:
     env:
       MERGIFY_TOKEN: ${{ secrets.MERGIFY_TOKEN }}
     steps:
-      - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -25,10 +24,14 @@ jobs:
           echo "TRIGGER_HEAD=${{ github.event.workflow_run.head_sha }}"
           echo "TRIGGER_BRANCH=${{ github.event.workflow_run.head_branch }}"
           echo "TRIGGER_EVENT=${{ github.event.workflow_run.event }}"
+          WORK="$RUNNER_TEMP/vm3-workflow-run"
+          rm -rf "$WORK"
+          mkdir -p "$WORK"
+          cd "$WORK"
           cat > package.json <<'EOF'
           {"private":true,"type":"module"}
           EOF
-          npm install --no-audit --no-fund --no-save vitest@4.1.10 @mergifyio/vitest@0.3.7
+          npm install --no-audit --no-fund vitest@4.1.10 @mergifyio/vitest@0.3.7
           cat > vitest.config.mjs <<'EOF'
           import { defineConfig } from 'vitest/config';
           import { MergifyReporter } from '@mergifyio/vitest';
