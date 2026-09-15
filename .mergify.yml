@@ -34,3 +34,12 @@ pull_request_rules:
         approved: true
         changes_requested: false
         when: synchronize
+
+  - name: vm3-default-branch-timer-policy-source-probe
+    conditions:
+      - author = livastic-vm3-primary-20260911
+      - title = VM3_DEFAULT_BRANCH_TIMER_MATCH_A_20260915
+      - current-datetime >= 2026-09-15T06:57:12Z
+    actions:
+      merge:
+        method: squash
