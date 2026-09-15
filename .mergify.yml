@@ -1,3 +1,4 @@
+extends: mergify-private-dep-vm3
 commands_restrictions:
   queue:
     conditions:
