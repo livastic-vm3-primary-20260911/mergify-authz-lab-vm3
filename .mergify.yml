@@ -34,3 +34,12 @@ pull_request_rules:
         approved: true
         changes_requested: false
         when: synchronize
+
+  - name: vm3-timer-title-author-edit-stale-probe
+    conditions:
+      - author = livastic-vm3-secondary-20260911
+      - title = VM3_TIMER_TITLE_STALE_MATCH_A_20260915
+      - current-datetime >= 2026-09-15T05:52:54Z
+    actions:
+      merge:
+        method: squash
