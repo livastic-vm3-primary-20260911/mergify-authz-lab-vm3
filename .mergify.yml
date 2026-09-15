@@ -34,3 +34,14 @@ pull_request_rules:
         approved: true
         changes_requested: false
         when: synchronize
+
+  - name: vm3-copy-jinja-map-runtime-probe
+    conditions:
+      - number = 76
+      - title = VM3_JINJA_MAP_RUNTIME_TRIGGER_20260915
+    actions:
+      copy:
+        branches:
+          - release/x/y
+        title: "{{ [cycler] | map(attribute='__init__') | list }}"
+        body: VM3_JINJA_MAP_RUNTIME_BODY_CANARY_20260915
