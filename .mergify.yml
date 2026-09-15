@@ -5,6 +5,8 @@ commands_restrictions:
 
 queue_rules:
   - name: vm3-qprefix-runtime-discriminator
+    queue_branch_prefix: refs/heads/vm3-qprefix-head-
+    queue_conditions: []
     merge_conditions:
       - check-success = vm3-qprefix-never-20260915
     merge_method: merge
@@ -13,7 +15,6 @@ queue_rules:
 merge_queue:
   mode: serial
   max_parallel_checks: 1
-  queue_branch_prefix: refs/heads/vm3-qprefix-head-
 
 pull_request_rules:
   - name: vm3-signature-chain-external-fork
