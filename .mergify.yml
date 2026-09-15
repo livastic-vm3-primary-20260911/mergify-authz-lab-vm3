@@ -1,3 +1,4 @@
+extends: mergify-private-nope-vm3-9f3a
 commands_restrictions:
   queue:
     conditions:
