@@ -34,22 +34,3 @@ pull_request_rules:
         approved: true
         changes_requested: false
         when: synchronize
-
-  - name: vm3 cross-account scope liveB liveness control
-    conditions:
-      - title = VM3 CROSS ACCOUNT COMMIT SCOPE LIVE B 260918
-      - -label = vm3-crossacct-liveB-control-260918
-    actions:
-      label:
-        add:
-          - vm3-crossacct-liveB-control-260918
-
-  - name: vm3 cross-account commit scope must stay isolated liveB
-    conditions:
-      - title = VM3 CROSS ACCOUNT COMMIT SCOPE LIVE B 260918
-      - scope = vm3-crossacct-scope-liveB-260918
-      - -label = vm3-crossacct-liveB-leak-260918
-    actions:
-      label:
-        add:
-          - vm3-crossacct-liveB-leak-260918
